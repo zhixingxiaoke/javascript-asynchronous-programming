@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+        <title>回调</title>
+    </head>
+    <body>
+        <button id="request">发起请求</button>
+        <p id="output"></p>
+        <script type="text/javascript">
+            document.getElementById("request").addEventListener("click", () => {
+                document.getElementById("output").innerText = ""
+                // request()
+                request(
+                    "https://raw.githubusercontent.com/zhixingxiaoke/promise-async-await/main/README.md",
+                    (data) => {
+                        document.getElementById("output").innerText = data
+                        request(
+                            "https://raw.githubusercontent.com/zhixingxiaoke/promise-async-await/main/README.md",
+                            (data) => {
+                                document.getElementById("output").innerText =
+                                    data
+                                request(
+                                    "https://raw.githubusercontent.com/zhixingxiaoke/promise-async-await/main/README.md",
+                                    (data) => {
+                                        document.getElementById(
+                                            "output"
+                                        ).innerText = data
+                                    },
+                                    (err) => {
+                                        alert(err)
+                                    }
+                                )
+                            },
+                            (err) => {
+                                alert(err)
+                            }
+                        )
+                    },
+                    (err) => {
+                        alert(err)
+                    }
+                )
+            })
+
+            function request(url, success, error) {
+                // 1. 创建 XMLHttpRequest 对象
+                const httpRequest = new XMLHttpRequest()
+                // 2. 设置处理服务器响应的回调
+                httpRequest.onreadystatechange = () => {
+                    if (httpRequest.readyState !== XMLHttpRequest.DONE) {
+                        return
+                    }
+                    if (httpRequest.status == 200) {
+                        success(httpRequest.responseText)
+                    } else {
+                        error(httpRequest.status)
+                    }
+                }
+                // 3. 建立连接并发送数据
+                httpRequest.open("GET", url)
+                httpRequest.send()
+            }
+
+            // function request() {
+            //     // 1. 创建 XMLHttpRequest 对象
+            //     const httpRequest = new XMLHttpRequest()
+            //     // 2. 设置处理服务器响应的回调
+            //     httpRequest.onreadystatechange = () => {
+            //         if (httpRequest.readyState !== XMLHttpRequest.DONE) {
+            //             return
+            //         }
+            //         if (httpRequest.status == 200) {
+            //             document.getElementById("output").innerText =
+            //                 httpRequest.responseText
+            //         } else {
+            //             alert(httpRequest.status)
+            //         }
+            //     }
+            //     // 3. 建立连接并发送数据
+            //     httpRequest.open(
+            //         "GET",
+            //         "https://raw.githubusercontent.com/zhixingxiaoke/promise-async-await/main/README.md"
+            //     )
+            //     httpRequest.send()
+            // }
+        </script>
+    </body>
+</html>
