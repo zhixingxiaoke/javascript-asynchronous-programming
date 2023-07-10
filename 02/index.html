@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+        <title>Promise基本用法</title>
+    </head>
+    <body>
+        <button id="request">发起请求</button>
+        <p id="output"></p>
+        <script type="text/javascript">
+            const url =
+                "https://raw.githubusercontent.com/zhixingxiaoke/javascript-asynchronous-programming/main/README.md"
+            document.getElementById("request").addEventListener("click", () => {
+                document.getElementById("output").innerText = ""
+                request(url)
+                    .then((v) => {
+                        document.getElementById("output").innerText = v
+                        return request(url)
+                    })
+                    .then((v) => {
+                        document.getElementById("output").innerText += v
+                        return request(url)
+                    })
+                    .then((v) => {
+                        document.getElementById("output").innerText += v
+                    })
+                    .catch((e) => {
+                        alert(e)
+                    })
+                // new Promise((resolve, reject) => {
+                //     setTimeout(() => {
+                //         resolve(1)
+                //     }, 1000)
+                //     console.log("running...")
+                // })
+                //     .then((v) => {
+                //         console.log(`resolve: ${v}`)
+                //         return new Promise((resolve, reject) => {
+                //             resolve(v + 1)
+                //         })
+                //     })
+                //     .then((v) => {
+                //         console.log(`resolve: ${v}`)
+                //     })
+                //     .catch((e) => {
+                //         console.log(`reject: ${e}`)
+                //     })
+                //     .finally(() => {
+                //         console.log("cleanup")
+                //     })
+            })
+
+            function request(url) {
+                return new Promise((resolve, reject) => {
+                    // 1. 创建 XMLHttpRequest 对象
+                    const httpRequest = new XMLHttpRequest()
+                    // 2. 设置处理服务器响应的回调
+                    httpRequest.onreadystatechange = () => {
+                        if (httpRequest.readyState !== XMLHttpRequest.DONE) {
+                            return
+                        }
+                        if (httpRequest.status == 200) {
+                            resolve(httpRequest.responseText)
+                        } else {
+                            reject(httpRequest.status)
+                        }
+                    }
+                    // 3. 建立连接并发送数据
+                    httpRequest.open("GET", url)
+                    httpRequest.send()
+                })
+            }
+        </script>
+    </body>
+</html>
